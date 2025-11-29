@@ -11,22 +11,61 @@ def index (request):
 def about (request):
     return HttpResponse("<h1>yheys</h1>"  "<h2>yheys</h2>" )
 def analyze(request):
-    djangotext=request.GET.get("text","default")
-    removingpunc = request.GET.get("remocingpunc", "off")
-    print(removingpunc)
-    print(djangotext)
-    if removingpunc=="on":
-        #analyzed=djangotext
-        punctuations="""!(){}[],.:;'"\/<>?#$%^&*_-"""
-        analyzed= ""
+    djangotext = request.GET.get("text", "default")
+    removingpunc = request.GET.get("removingpunc", "off")
+    fullcaps = request.GET.get("fullcaps", "off")
+    newlineremover=request.GET.get("newlineremover", "off")
+    thespaceremover=request.GET.get("thespaceremover", "off")
+
+
+#check the which check box is on
+    if removingpunc == "on":
+        punctuations = """!(){}[],.:;'"\/<>?#$%^&*_-"""
+        analyzed = ""
+
         for char in djangotext:
             if char not in punctuations:
-                analyzed+=char
+                analyzed += char
 
-        params={"purpose": "remove the punctuations","analyzed_text": analyzed}
-        return render(request,"analyze.html",params)
-    # else:
-    #     return HttpResponse("error")
+        # Return AFTER the loop
+        params = {
+            "purpose": "remove the punctuations",
+            "analyzed_text": analyzed
+        }
+        return render(request, "analyze.html", params)
+    elif fullcaps=="on":
+        analyzed=""
+        for char in djangotext:
+            analyzed+=char.upper()
+        params = {
+            "purpose": "capitalized the text",
+            "analyzed_text": analyzed
+        }
+        return render(request, "analyze.html", params)
+    elif newlineremover=="on":
+        analyzed = ""
+        for char in djangotext:
+            if char!= "\n":
+                analyzed += char
+        params = {
+            "purpose": "removing the new line",
+            "analyzed_text": analyzed
+        }
+        return render(request, "analyze.html", params)
+    elif thespaceremover=="on":
+        analyzed = ""
+        for char in djangotext:
+            if char !="  ":
+                analyzed += char
+        params = {
+            "purpose": "removing the space from the text",
+            "analyzed_text": analyzed
+        }
+        return render(request, "analyze.html", params)
+
+    else:
+        return HttpResponse("error")
+
 
 
 
